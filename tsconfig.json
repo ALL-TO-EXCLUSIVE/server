@@ -9,7 +9,8 @@
     "skipLibCheck": true,
 "baseUrl": "./src",
 "paths": {
-  "@/*": ["*"]
+  "@/*": ["*"],
+  "@generated/prisma": ["generated/prisma"]
 }
   },
   "include": [
