@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum Role {
+  MEMBER
+  VILLAGE_ADMIN
+  SUPER_ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+model Member {
+  id              String    @id @default(uuid())
+  name            String
+  password        String    @unique
+  dob             DateTime?
+  gender          Gender?
+  phone           String    @unique
+  email           String?   @unique
+  address         String?
+  business        String?
+  job             String?
+  education       String?
+  bloodGroup      String?
+  maternalSurname String?
+  maternalVillage String?
+  maritalStatus   String?
+  relationToHead  String?
+  photoUrl        String?
+
+  // Family association
+  familyId String?
+  family   Family? @relation(fields: [familyId], references: [id])
+
+  // Family structure (optional deeper relationship)
+  familyHead    Member?  @relation("FamilyRelation", fields: [familyHeadId], references: [id])
+  familyHeadId  String?
+  familyMembers Member[] @relation("FamilyRelation")
+
+  // Village association
+  villageId String?
+  village   Village? @relation(fields: [villageId], references: [id])
+
+  // Role and status
+  role     Role    @default(MEMBER)
+  isActive Boolean @default(true)
+
+  // Reverse role-specific links
+  villageAdmin VillageAdmin?
+  superAdmin   SuperAdmin?
+
+  // Events posted by this member
+  eventsPosted Event[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Family {
+  id        String   @id @default(uuid())
+  name      String?
+  address   String?
+  villageId String
+  village   Village  @relation(fields: [villageId], references: [id])
+  members   Member[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Village {
+  id       String  @id @default(uuid())
+  name     String  @unique
+  district String?
+  state    String?
+
+  members  Member[]
+  admins   VillageAdmin[]
+  families Family[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VillageAdmin {
+  id        String @id @default(uuid())
+  memberId  String @unique
+  villageId String
+
+  member  Member  @relation(fields: [memberId], references: [id])
+  village Village @relation(fields: [villageId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SuperAdmin {
+  id       String @id @default(uuid())
+  memberId String @unique
+
+  member Member @relation(fields: [memberId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Event {
+  id      String   @id @default(uuid())
+  title   String
+  content String
+  date    DateTime
+
+  postedById String
+  postedBy   Member @relation(fields: [postedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
