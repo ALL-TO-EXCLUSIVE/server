@@ -71,27 +71,37 @@ export const login = async (
 };
 
 
-export const getMe = async (req: Request, res: Response, next: NextFunction): Promise<Response | any> => {
+export const getMe = async (req: Request, res: Response): Promise<void> => {
   const userId = (req as any).user?.id;
+
+  if (!userId) {
+    res.status(401).json({ message: "Unauthorized" });
+    return; // <-- important
+  }
 
   try {
     const user = await prisma.member.findUnique({
       where: { id: userId },
-      include: {
-        villageAdmin: true,
-        superAdmin: true,
-        village: true,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
       },
     });
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return; // <-- important
+    }
 
-    return res.json({ user });
+    res.json({ user });
   } catch (err) {
-    next(err);
-    return res.status(500).json({ message: "Server error" });
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
+
 
 export const logout = (req: Request, res: Response) => {
   res.clearCookie("token");

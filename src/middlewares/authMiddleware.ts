@@ -4,22 +4,22 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "secretkey";
 
-export const authenticate = (req: Request, res: Response, next: NextFunction):  any => {
-  const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+export const authenticate = (req: Request, res: Response, next: NextFunction): void => {
+  const token = req.headers.authorization;
 
   if (!token) {
-    return res.status(401).json({ message: "Authentication required" });
+    res.status(401).json({ message: "Unauthorized" });
+    return;
   }
 
-try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    (req as any).user = decoded;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    (req as any).user = decoded; // You can add typing here if needed
     next();
-  } catch (error) {
-    return res.status(401).json({ message: "Invalid or expired token" });
+  } catch (err) {
+    res.status(403).json({ message: "Forbidden" });
   }
 };
-
 export const authorize =
   (roles: Role[]) =>
   (req: Request, res: Response, next: NextFunction) : any=> {
