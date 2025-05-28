@@ -60,3 +60,53 @@ export const createMember = async (req: Request, res: Response, next: NextFuncti
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const getAllMembers = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const members = await prisma.member.findMany();
+    res.json(members);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMemberById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const member = await prisma.member.findUnique({
+      where: { id }
+    });
+    if (!member) {
+      return res.status(404).json({ error: "Member not found" });
+    }
+    res.json(member);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateMember = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    const member = await prisma.member.update({
+      where: { id },
+      data: updateData
+    });
+    res.json(member);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteMember = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    await prisma.member.delete({
+      where: { id }
+    });
+    res.json({ message: "Member deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -49,11 +49,12 @@ export const login = async (
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: "/",
     });
 
     // Return only public user info
-    return res.json({
+ return res.json({
       message: "Login successful",
       user: {
         id: user.id,
@@ -61,6 +62,7 @@ export const login = async (
         email: user.email,
         role: user.role,
       },
+      token // Send token in response
     });
   } catch (err) {
     next(err);

@@ -14,7 +14,7 @@ dotenv.config();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: ["https://parejiyaparivar.org", "http://localhost:8080"],
+  origin: ["https://parejiyaparivar.org", "http://localhost:8080", "http://localhost:3000"],
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
   methods: ["GET", "POST", "PUT", "DELETE"],
