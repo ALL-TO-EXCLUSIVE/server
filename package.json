@@ -3,13 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
 "scripts": {
   "build": "prisma generate && tsc",
   "start": "node dist/server.js",
   "dev": "nodemon src/server.ts"
-}
-  },
+},
   "prisma":{
     "seed":"ts-node prisma/seed.ts"
   },

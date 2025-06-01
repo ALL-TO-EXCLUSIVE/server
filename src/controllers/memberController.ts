@@ -61,31 +61,49 @@ export const createMember = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const getAllMembers = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllMembers = async (req: Request, res: Response, next: NextFunction) : Promise<Response | any> => {
   try {
     const members = await prisma.member.findMany();
-    res.json(members);
+    return res.json(members);
   } catch (error) {
     next(error);
   }
 };
 
-export const getMemberById = async (req: Request, res: Response, next: NextFunction) => {
+export const getMemberById = async (req: Request, res: Response, next: NextFunction) : Promise<Response | any> => {
   try {
     const { id } = req.params;
     const member = await prisma.member.findUnique({
-      where: { id }
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        bloodGroup: true,
+        education: true,
+        business: true,
+        job: true,
+        address: true,
+        maternalSurname: true,
+        maternalVillage: true,
+        maritalStatus: true,
+        photoUrl: true,
+        // Exclude sensitive fields like password
+      }
     });
+
     if (!member) {
       return res.status(404).json({ error: "Member not found" });
     }
+
     res.json(member);
   } catch (error) {
     next(error);
   }
 };
 
-export const updateMember = async (req: Request, res: Response, next: NextFunction) => {
+export const updateMember = async (req: Request, res: Response, next: NextFunction):Promise<Response | any> => {
   try {
     const { id } = req.params;
     const updateData = req.body;
@@ -93,19 +111,19 @@ export const updateMember = async (req: Request, res: Response, next: NextFuncti
       where: { id },
       data: updateData
     });
-    res.json(member);
+    return res.json(member);
   } catch (error) {
     next(error);
   }
 };
 
-export const deleteMember = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteMember = async (req: Request, res: Response, next: NextFunction):Promise<Response | any> => {
   try {
     const { id } = req.params;
     await prisma.member.delete({
       where: { id }
     });
-    res.json({ message: "Member deleted successfully" });
+    return res.json({ message: "Member deleted successfully" });
   } catch (error) {
     next(error);
   }
