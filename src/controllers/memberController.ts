@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../lib/prisma";
+
 export const createMember = async (req: Request, res: Response, next: NextFunction): Promise<Response | any> => {
   const {
     name,
@@ -124,6 +125,29 @@ export const deleteMember = async (req: Request, res: Response, next: NextFuncti
       where: { id }
     });
     return res.json({ message: "Member deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateProfilePhoto = async (req: Request, res: Response, next: NextFunction):Promise<Response | any> => {
+  try {
+    const { id } = req.params;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    // Update member with new photo URL
+    const member = await prisma.member.update({
+      where: { id },
+      data: {
+        photoUrl: `/uploads/profiles/${file.filename}`
+      }
+    });
+
+    res.json({ photoUrl: member.photoUrl });
   } catch (error) {
     next(error);
   }
