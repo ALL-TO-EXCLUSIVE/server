@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../lib/prisma";
+import { RequestWithFile } from '../types';
 
 export const createMember = async (req: Request, res: Response, next: NextFunction): Promise<Response | any> => {
   const {
@@ -130,7 +131,11 @@ export const deleteMember = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const updateProfilePhoto = async (req: Request, res: Response, next: NextFunction):Promise<Response | any> => {
+export const updateProfilePhoto = async (
+  req: RequestWithFile,
+  res: Response,
+  next: NextFunction
+): Promise<Response | any> => {
   try {
     const { id } = req.params;
     const file = req.file;
@@ -139,7 +144,6 @@ export const updateProfilePhoto = async (req: Request, res: Response, next: Next
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // Update member with new photo URL
     const member = await prisma.member.update({
       where: { id },
       data: {
