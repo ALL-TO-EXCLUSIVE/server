@@ -10,7 +10,7 @@ import path from 'path';
 import fs from 'fs';
 import { securityMiddleware } from './middlewares/security';
 import { errorHandler } from './middlewares/errorHandler';
-
+import { Request, Response, NextFunction } from 'express';
 const app = express();
 dotenv.config();
 
@@ -41,7 +41,7 @@ if (!fs.existsSync(uploadsDir)){
 }
 
 // Remove json parser for /api/members/:id/photo route
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   if (req.originalUrl.includes('/api/members') && req.originalUrl.includes('/photo')) {
     next();
   } else {
