@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { RequestWithFile } from '../types';
+import cloudinary from '../config/cloudinary';
 
 export const createMember = async (req: Request, res: Response, next: NextFunction): Promise<Response | any> => {
   const {
@@ -137,22 +138,24 @@ export const updateProfilePhoto = async (
   next: NextFunction
 ): Promise<Response | any> => {
   try {
-    const { id } = req.params;
-    const file = req.file;
-
-    if (!file) {
+    if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'profiles',
+      transformation: [
+        { width: 500, height: 500, crop: 'fill' }
+      ]
+    });
+
     const member = await prisma.member.update({
-      where: { id },
-      data: {
-        photoUrl: `/uploads/profiles/${file.filename}`
-      }
+      where: { id: req.params.id },
+      data: { photoUrl: result.secure_url }
     });
 
     res.json({ photoUrl: member.photoUrl });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: 'Upload failed' });
   }
 };
