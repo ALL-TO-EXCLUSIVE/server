@@ -26,7 +26,12 @@ export const login = async (
         password: true,
         role: true,
         isActive: true,
-
+        village: {
+          select:{
+            name: true, // Select only the name of the village
+            id: true, // Include village ID if needed for further operations
+          }
+        }, // Include village if needed
       },
     });
 
@@ -61,6 +66,7 @@ export const login = async (
         name: user.name,
         email: user.email,
         role: user.role,
+        village: user.village, // Include village if needed
       },
       token // Send token in response
     });
@@ -87,6 +93,12 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
         name: true,
         email: true,
         role: true,
+        village:{
+          select: {
+            id: true, // Include village ID if needed
+            name: true, // Select only the name of the village
+          }
+        }
       },
     });
 

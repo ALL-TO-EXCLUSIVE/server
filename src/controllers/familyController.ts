@@ -1,26 +1,21 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../lib/prisma";
-export const createFamily = async (req: Request, res: Response, next: NextFunction): Promise<Response | any> => {
-  const { villageId } = req.body;
+// ✅ family.controller.ts
+export const createFamily = async (req: Request, res: Response) => {
+  const { villageId, address } = req.body;
 
-  if (!villageId) {
-    return res.status(400).json({ error: "villageId is required" });
-  }
+  if (!villageId) return res.status(400).json({ error: "villageId is required" });
 
-  try {
-    const family = await prisma.family.create({
-      data: {
-        villageId: villageId,
-      },
-    });
+  const family = await prisma.family.create({
+    data: {
+      villageId,
+      address, // ← this line ensures address is saved
+    },
+  });
 
-    res.status(201).json(family);
-  } catch (error) {
-    next(error);
-    console.error("Error creating family:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+  return res.status(201).json(family);
 };
+
 
 export const getAllFamilies = async (req: Request, res: Response, next: NextFunction) => {
   try {

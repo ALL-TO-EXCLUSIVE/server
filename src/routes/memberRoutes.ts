@@ -7,6 +7,11 @@ const router = express.Router();
 
 router.post("/", createMember);
 router.get("/:id", authenticate, getMemberById);
-router.post("/:id/photo", authenticate, upload.single('image'), updateProfilePhoto);
+router.post("/:id/photo", 
+  authenticate, // Ensure this runs first
+  upload.single('image'),
+  updateProfilePhoto
+);
+
 
 export default router;
