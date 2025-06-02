@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: your-backend-name
+    name: parejiya-parivar-backend
     env: node
     buildCommand: npm install && npx prisma generate && tsc
     startCommand: node dist/server.js
