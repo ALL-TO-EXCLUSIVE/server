@@ -8,11 +8,10 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "rootDir": ".",          // Changed from "./src" to "."
-    "baseUrl": ".",          // Changed from "./src" to "."
+    "baseUrl": "./src",
     "typeRoots": ["./node_modules/@types"],
     "types": ["node", "express", "multer", "jsonwebtoken"]
   },
-  "include": ["src/**/*", "prisma/**/*"],  // Updated include patterns
+  "include": ["src", "prisma"],
   "exclude": ["node_modules", "dist"]
 }
