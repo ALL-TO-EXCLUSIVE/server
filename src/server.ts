@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 
 export const isDev = process.env.NODE_ENV !== 'production';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:8080';
-
+console.log(isDev)
 app.use(cors({
   origin: isDev 
     ? ['http://localhost:3000', 'http://localhost:8080']
