@@ -3,7 +3,13 @@ import { prisma } from "../lib/prisma";
 import { RequestWithFile } from '../types';
 import cloudinary from '../config/cloudinary';
 import bcrypt from "bcryptjs";
-export const createMember = async (req: Request, res: Response, next: NextFunction): Promise<Response | any> => {
+import { BaseController } from "./BaseController";
+
+
+export class MemberController extends BaseController {
+
+
+  createMember = async (req: Request, res: Response, next: NextFunction): Promise<Response | any> => {
   try {
     let {
       name,
@@ -99,7 +105,7 @@ export const createMember = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const getAllMembers = async (req: Request, res: Response, next: NextFunction) : Promise<Response | any> => {
+  getAllMembers = async (req: Request, res: Response, next: NextFunction) : Promise<Response | any> => {
   try {
     const members = await prisma.member.findMany();
     return res.json(members);
@@ -108,7 +114,7 @@ export const getAllMembers = async (req: Request, res: Response, next: NextFunct
   }
 };
 
-export const getMemberById = async (req: Request, res: Response, next: NextFunction) : Promise<Response | any> => {
+  getMemberById = async (req: Request, res: Response, next: NextFunction) : Promise<Response | any> => {
   try {
     const { id } = req.params;
     const member = await prisma.member.findUnique({
@@ -141,7 +147,7 @@ export const getMemberById = async (req: Request, res: Response, next: NextFunct
   }
 };
 
-export const updateMember = async (req: Request, res: Response, next: NextFunction):Promise<Response | any> => {
+  updateMember = async (req: Request, res: Response, next: NextFunction):Promise<Response | any> => {
   try {
     const { id } = req.params;
     const updateData = req.body;
@@ -155,7 +161,7 @@ export const updateMember = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const deleteMember = async (req: Request, res: Response, next: NextFunction):Promise<Response | any> => {
+  deleteMember = async (req: Request, res: Response, next: NextFunction):Promise<Response | any> => {
   try {
     const { id } = req.params;
     await prisma.member.delete({
@@ -167,7 +173,7 @@ export const deleteMember = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const updateProfilePhoto = async (
+  updateProfilePhoto = async (
   req: RequestWithFile,
   res: Response,
   next: NextFunction
@@ -194,3 +200,5 @@ export const updateProfilePhoto = async (
     res.status(500).json({ error: 'Upload failed' });
   }
 };
+
+}export default MemberController;

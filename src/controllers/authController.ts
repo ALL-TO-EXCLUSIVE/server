@@ -26,12 +26,14 @@ export const login = async (
         password: true,
         role: true,
         isActive: true,
+        photoUrl: true, // Include photoUrl if needed
         village: {
           select:{
             name: true, // Select only the name of the village
             id: true, // Include village ID if needed for further operations
           }
         }, // Include village if needed
+        
       },
     });
 
@@ -93,6 +95,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
         name: true,
         email: true,
         role: true,
+        photoUrl: true, // Include photoUrl if needed
         village:{
           select: {
             id: true, // Include village ID if needed

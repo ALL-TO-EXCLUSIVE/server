@@ -5,15 +5,15 @@ const prisma = new PrismaClient();
 
 async function main() {
    // 1. Create a village
-  const village = await prisma.village.upsert({
-    where: { name: "TestVillage" },
-    update: {},
-    create: {
-      name: "TestVillage",
-      district: "Surat",
-      state: "Gujarat",
-    },
-  });
+  // const village = await prisma.village.upsert({
+  //   where: { name: "TestVillage" },
+  //   update: {},
+  //   create: {
+  //     name: "TestVillage",
+  //     district: "Surat",
+  //     state: "Gujarat",
+  //   },
+  // });
 
   // 2. Create a hashed password
   const hashedPassword = await bcrypt.hash("admin123", 10); // 🔐 test password
@@ -26,7 +26,7 @@ async function main() {
       phone: "9876543210",
       password: hashedPassword,
       role: "VILLAGE_ADMIN",
-      villageId: village.id,
+      villageId: "2abea0f6-7b11-4a2f-a62f-3a1ec218b2e5",
       isActive: true,
     },
   });
@@ -35,7 +35,7 @@ async function main() {
   await prisma.villageAdmin.create({
     data: {
       memberId: member.id,
-      villageId: village.id,
+      villageId: "2abea0f6-7b11-4a2f-a62f-3a1ec218b2e5",
     },
   });
 
