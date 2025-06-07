@@ -12,5 +12,7 @@ router.post("/:id/photo",
   upload.single('image'),
   memberController.updateProfilePhoto
 );
+router.put("/:id", authenticate, memberController.updateMember);
+router.get("/", authenticate, memberController.getAllMembers);
 
 export default router;

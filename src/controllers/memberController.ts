@@ -133,7 +133,14 @@ export class MemberController extends BaseController {
             gender: true,
             photoUrl: true,
             dob: true,
-            familyHeadId: true // 👈
+            familyHeadId: true, // 👈
+            phone: true,
+            email: true,
+            education: true,
+            job: true,
+            business: true,
+            address: true,
+            maritalStatus: true
           }
         }
       }
@@ -153,29 +160,45 @@ export class MemberController extends BaseController {
   };
 
   // ✅ Update Member
-  updateMember = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<Response | any> => {
-    try {
-      const { id } = req.params;
-      const updateData = req.body;
+updateMember = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | any> => {
+  try {
+    const { id } = req.params;
+    const {
+      name,
+      email,
+      phone,
+      address,
+      maritalStatus,
+      job,
+      business,
+      education,
+      relationToHead
+    } = req.body;
 
-      if (updateData.password) {
-        updateData.password = bcrypt.hashSync(updateData.password, 10);
-      }
+    const updated = await prisma.member.update({
+      where: { id },
+      data: {
+        ...(name && { name }),
+        ...(email && { email }),
+        ...(phone && { phone }),
+        ...(address && { address }),
+        ...(maritalStatus && { maritalStatus }),
+        ...(job && { job }),
+        ...(business && { business }),
+        ...(education && { education }),
+        ...(relationToHead && { relationToHead }),
+      },
+    });
 
-      const updated = await prisma.member.update({
-        where: { id },
-        data: updateData
-      });
-
-      return res.json(updated);
-    } catch (error) {
-      next(error);
-    }
-  };
+    return res.json(updated);
+  } catch (error) {
+    next(error);
+  }
+};
 
   // ✅ Delete Member
   deleteMember = async (
@@ -229,11 +252,19 @@ export class MemberController extends BaseController {
   ): Promise<Response | any> => {
     try {
       const members = await prisma.member.findMany({
-        select: {
-          id: true,
-          name: true,
-          villageId: true,
-          role: true
+        omit: {
+          password: true, // Exclude password field
+          role: true, // Exclude role field
+          isActive: true, // Exclude isActive field
+
+        },
+        include:{
+          village:{
+            select: {
+              id: true,
+              name: true
+            }
+          }
         }
       });
 
