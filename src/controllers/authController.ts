@@ -10,15 +10,19 @@ export const login = async (
   res: Response,
   next: NextFunction
 ): Promise<Response | any> => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required" });
+  // const { email, password } = req.body;
+  // if (!email || !password) {
+  //   return res.status(400).json({ message: "Email and password are required" });
+  // }
+  const { phone, password } = req.body;
+  if (!phone || !password) {
+    return res.status(400).json({ message: "Phone number and password are required" });
   }
 
   try {
     // Only select fields you need
     const user = await prisma.member.findUnique({
-      where: { email },
+      where: { phone },
       select: {
         id: true,
         name: true,
